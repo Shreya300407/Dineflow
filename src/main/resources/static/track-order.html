@@ -1,0 +1,560 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Dineflow - Live Order Tracking</title>
+  <link rel="stylesheet" href="css/style.css?v=2.6" />
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,500;0,600;0,700;1,400&family=Plus+Jakarta+Sans:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+  
+  <style>
+    :root {
+      --bg-cream: #FAF7F2;
+      --bg-cream-light: #FFFDF9;
+      --bg-beige: #F2EBE1;
+      --bg-beige-deep: #E7DDCE;
+      --card-bg: #FFFFFF;
+      --card-border: #E8DFD3;
+      --accent-terracotta: #C86D3B;
+      --accent-terracotta-hover: #AF5B2D;
+      --accent-terracotta-soft: rgba(200, 109, 59, 0.12);
+      --accent-green: #3F704D;
+      --accent-green-soft: rgba(63, 112, 77, 0.12);
+      --text-primary: #2C231C;
+      --text-secondary: #6B5E53;
+      --text-muted: #9C8F84;
+      --radius-sm: 8px;
+      --radius-md: 14px;
+      --radius-lg: 20px;
+      --radius-pill: 999px;
+      --font-serif: 'Playfair Display', Georgia, serif;
+      --font-sans: 'Plus Jakarta Sans', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+    }
+
+    body {
+      background-color: var(--bg-cream);
+      color: var(--text-primary);
+      font-family: var(--font-sans);
+      margin: 0;
+      padding: 0;
+      overflow-x: hidden;
+      -webkit-font-smoothing: antialiased;
+    }
+
+    .checkout-page-header {
+      text-align: center;
+      padding: 3rem 1.5rem 2.2rem;
+      background: linear-gradient(180deg, var(--bg-beige) 0%, var(--bg-cream) 100%);
+      border-bottom: 1px solid var(--card-border);
+    }
+
+    .checkout-page-header .section-subtitle {
+      display: inline-block;
+      font-size: 0.8rem;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.14em;
+      color: var(--accent-terracotta);
+      margin-bottom: 0.5rem;
+    }
+
+    .checkout-page-header .section-title {
+      font-family: var(--font-serif);
+      font-size: 2.3rem;
+      font-weight: 700;
+      color: var(--text-primary);
+      margin: 0 0 0.6rem;
+    }
+
+    .checkout-page-header .section-desc {
+      font-size: 1rem;
+      color: var(--text-secondary);
+      max-width: 600px;
+      margin: 0 auto 1.5rem;
+      line-height: 1.6;
+    }
+
+    .search-card-box {
+      max-width: 620px;
+      margin: 1.5rem auto 0;
+      background: #FFFFFF;
+      padding: 0.45rem;
+      border-radius: var(--radius-pill);
+      border: 1.5px solid var(--card-border);
+      box-shadow: 0 6px 20px rgba(44, 35, 28, 0.06);
+      display: flex;
+      gap: 0.5rem;
+    }
+
+    .search-card-box input {
+      flex: 1;
+      border: none !important;
+      background: transparent !important;
+      padding: 0.75rem 1.25rem !important;
+      font-size: 1rem !important;
+      font-family: monospace !important;
+      color: var(--text-primary);
+      outline: none;
+    }
+
+    .search-card-box button {
+      background: var(--accent-terracotta);
+      color: #FFFFFF;
+      padding: 0.75rem 1.75rem;
+      border-radius: var(--radius-pill);
+      font-weight: 700;
+      font-size: 0.95rem;
+      cursor: pointer;
+      border: none;
+      transition: all 0.2s;
+      white-space: nowrap;
+    }
+
+    .search-card-box button:hover {
+      background: var(--accent-terracotta-hover);
+    }
+
+    .confirmation-container {
+      max-width: 980px;
+      margin: 2.5rem auto 5rem;
+      padding: 0 1.5rem;
+    }
+
+    .checkout-card {
+      background: #FFFFFF;
+      border: 1px solid var(--card-border);
+      border-radius: var(--radius-lg);
+      padding: 2.5rem;
+      box-shadow: 0 10px 30px rgba(44, 35, 28, 0.05), 0 1px 3px rgba(44, 35, 28, 0.03);
+    }
+
+    /* Stepper Architecture */
+    .stepper-container {
+      position: relative;
+      display: flex;
+      justify-content: space-between;
+      align-items: flex-start;
+      margin: 2.5rem 0 3rem;
+      padding: 0 1.5rem;
+    }
+
+    .stepper-progress-line {
+      position: absolute;
+      top: 26px;
+      left: 3.5rem;
+      right: 3.5rem;
+      height: 4px;
+      background: var(--bg-beige-deep, #E7DDCE);
+      z-index: 1;
+    }
+
+    .stepper-progress-fill {
+      height: 100%;
+      background: var(--accent-terracotta);
+      transition: width 0.4s ease;
+    }
+
+    .stepper-step {
+      position: relative;
+      z-index: 2;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      text-align: center;
+      width: 105px;
+    }
+
+    .step-icon-circle {
+      width: 52px;
+      height: 52px;
+      border-radius: 50%;
+      background: #FFFFFF;
+      border: 3px solid var(--bg-beige-deep, #E7DDCE);
+      color: var(--text-muted);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 1.35rem;
+      margin-bottom: 0.6rem;
+      transition: all 0.3s ease;
+      box-shadow: 0 2px 6px rgba(0, 0, 0, 0.04);
+    }
+
+    .stepper-step.completed .step-icon-circle,
+    .stepper-step.is-completed .step-icon-circle {
+      border-color: var(--accent-green);
+      background: var(--accent-green-soft);
+      color: var(--accent-green);
+    }
+
+    .stepper-step.current .step-icon-circle,
+    .stepper-step.is-active .step-icon-circle {
+      border-color: var(--accent-terracotta);
+      background: #FFFFFF;
+      color: var(--accent-terracotta);
+      transform: scale(1.12);
+      box-shadow: 0 0 0 6px var(--accent-terracotta-soft);
+    }
+
+    .step-title {
+      font-weight: 700;
+      font-size: 0.85rem;
+      color: var(--text-muted);
+      margin-bottom: 0.2rem;
+    }
+
+    .stepper-step.completed .step-title,
+    .stepper-step.is-completed .step-title,
+    .stepper-step.current .step-title,
+    .stepper-step.is-active .step-title {
+      color: var(--text-primary);
+    }
+
+    .step-subtext {
+      font-size: 0.75rem;
+      color: var(--text-muted);
+    }
+
+    /* Status Badges */
+    .status-badge {
+      display: inline-block;
+      padding: 0.4rem 1.1rem;
+      border-radius: var(--radius-pill);
+      font-weight: 700;
+      font-size: 0.85rem;
+      letter-spacing: 0.04em;
+    }
+
+    .status-placed { background: #E0E7FF; color: #3730A3; border: 1px solid #C7D2FE; }
+    .status-confirmed { background: #FEF3C7; color: #92400E; border: 1px solid #FDE68A; }
+    .status-preparing { background: #FFEDD5; color: #9A3412; border: 1px solid #FED7AA; }
+    .status-out_for_delivery { background: #E0F2FE; color: #075985; border: 1px solid #BAE6FD; }
+    .status-delivered { background: #DCFCE7; color: #166534; border: 1px solid #BBF7D0; }
+    .status-cancelled { background: #FEE2E2; color: #991B1B; border: 1px solid #FECACA; }
+
+    @media (max-width: 768px) {
+      .stepper-container {
+        overflow-x: auto;
+        padding-bottom: 1rem;
+      }
+      .stepper-step {
+        width: 80px;
+        flex-shrink: 0;
+      }
+      .tracking-meta-grid {
+        grid-template-columns: 1fr !important;
+        gap: 1.25rem !important;
+      }
+      .checkout-card {
+        padding: 1.5rem;
+      }
+    }
+  </style>
+</head>
+<body>
+
+  <!-- Top Announcement Bar -->
+  <aside class="top-bar" aria-label="Announcement">
+    <div class="top-bar-inner">
+      <span>✨ Dineflow Live Tracker — Real-time kitchen & delivery dispatch status</span>
+      <div id="backendStatusPill" class="server-badge">
+        <span class="server-dot"></span> Spring Boot Backend: Online
+      </div>
+    </div>
+  </aside>
+
+  <!-- Navigation Bar -->
+  <header>
+    <nav class="navbar" aria-label="Main Navigation">
+      <div class="nav-container">
+        <!-- Logo -->
+        <a href="/" class="brand-logo">
+          <div class="brand-logo-icon">🍽️</div>
+          <span class="brand-name">Dine<span>flow</span></span>
+        </a>
+
+        <!-- Desktop Navigation Links -->
+        <ul class="nav-links">
+          <li><a href="/">Home</a></li>
+          <li><a href="menu.html">Full Menu</a></li>
+          <li><a href="orders.html">My Orders</a></li>
+          <li><a href="track-order.html" class="active">Track Order</a></li>
+          <li><a href="/#about">Our Story</a></li>
+        </ul>
+
+        <!-- Action Buttons -->
+        <div class="nav-actions">
+          <button id="openCartBtn" class="cart-btn" title="View Order Tray" aria-label="View Order Tray">
+            🛒
+            <span id="cartBadge" class="cart-badge">0</span>
+          </button>
+          <a href="menu.html" class="btn-primary" style="padding: 0.68rem 1.35rem; font-size: 0.9rem; font-weight: 700; text-decoration: none;">
+            Order Food
+          </a>
+        </div>
+      </div>
+    </nav>
+  </header>
+
+  <!-- Page Header -->
+  <header class="checkout-page-header">
+    <span class="section-subtitle">Real-Time Kitchen Dispatch</span>
+    <h1 class="section-title">Track Your Artisanal Order</h1>
+    <p class="section-desc">
+      Enter your Dineflow order number to check kitchen preparation, delivery progress, and estimated arrival.
+    </p>
+
+    <!-- Search Form -->
+    <div style="max-width: 620px; margin: 0 auto; padding: 0 1rem;">
+      <form id="trackOrderForm" class="search-card-box">
+        <input 
+          type="text" 
+          id="trackOrderInput" 
+          placeholder="Enter Order No. (e.g. DF-20261025-XXXXXX)" 
+          required 
+        />
+        <button type="submit">
+          🔍 Track Status
+        </button>
+      </form>
+    </div>
+  </header>
+
+  <!-- Main Tracking Container -->
+  <main class="confirmation-container">
+    
+    <!-- 1. Loading State -->
+    <div id="trackLoadingState" class="loading-container" style="display: none; text-align: center; padding: 4rem 1.5rem; background: #fff; border-radius: 16px; border: 1px solid var(--card-border);">
+      <div class="spinner" style="width: 44px; height: 44px; border: 4px solid var(--bg-beige); border-top-color: var(--accent-terracotta); border-radius: 50%; margin: 0 auto; animation: spin 0.8s linear infinite;"></div>
+      <div class="loading-text" style="font-family: var(--font-serif); font-size: 1.35rem; margin-top: 1.2rem; font-weight: 600;">Fetching Live Order Status...</div>
+      <div class="loading-subtext" style="color: var(--text-secondary); font-size: 0.9rem; margin-top: 0.3rem;">Connecting to Dineflow order management server.</div>
+    </div>
+
+    <!-- 2. Error / Not Found State (Friendly handling for invalid order numbers) -->
+    <div id="trackErrorState" class="api-error-card" style="display: none; margin-bottom: 2rem; text-align: center; padding: 3.5rem 1.5rem; background: #FFF7F5; border: 1px solid #FFD8CE; border-radius: 16px;">
+      <div style="font-size: 3rem; margin-bottom: 0.5rem;">🔍</div>
+      <h3 class="api-error-title" style="font-family: var(--font-serif); font-size: 1.45rem; color: #A93822; margin: 0.4rem 0;">Order Not Found</h3>
+      <p id="trackErrorMessage" class="api-error-desc" style="color: var(--text-secondary); max-width: 520px; margin: 0 auto 1.5rem; line-height: 1.6; font-size: 0.95rem;">
+        We couldn't find an order matching that number. Dineflow order numbers follow the format <strong>DF-YYYYMMDD-XXXXXX</strong>.
+      </p>
+      <div style="display: flex; justify-content: center; gap: 0.8rem; flex-wrap: wrap;">
+        <a href="orders.html" class="btn-primary" style="display: inline-block; padding: 0.75rem 1.6rem; border-radius: 10px; background: var(--accent-terracotta); color: #fff; text-decoration: none; font-weight: 700;">
+          📋 View My Orders
+        </a>
+        <a href="menu.html" class="btn-secondary" style="display: inline-block; padding: 0.75rem 1.5rem; border-radius: 10px; border: 1.5px solid var(--card-border); background: #fff; color: var(--text-primary); text-decoration: none; font-weight: 600;">
+          Explore Menu →
+        </a>
+      </div>
+    </div>
+
+    <!-- 3. Tracking Details Card (Real MySQL data) -->
+    <article id="trackDetailsCard" class="checkout-card" style="display: none;">
+      
+      <!-- Order Header Row -->
+      <div style="display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 1rem; padding-bottom: 1.5rem; border-bottom: 1px solid var(--card-border);">
+        <div>
+          <span style="font-size: 0.8rem; text-transform: uppercase; color: var(--text-muted); font-weight: 700; letter-spacing: 0.05em;">Order Number</span>
+          <div style="display: flex; align-items: center; gap: 0.8rem; margin-top: 0.3rem;">
+            <h2 id="trackerOrderNumber" style="font-family: monospace; font-size: 1.45rem; color: var(--accent-terracotta); margin: 0;">—</h2>
+            <button id="trackerCopyBtn" class="order-number-pill" style="margin: 0; padding: 0.25rem 0.75rem; font-size: 0.8rem; cursor: pointer; border: 1px solid var(--card-border); border-radius: var(--radius-pill); background: var(--bg-cream-light); font-weight: 600;">📋 Copy</button>
+          </div>
+          <div id="trackerPlacedDate" style="font-size: 0.85rem; color: var(--text-secondary); margin-top: 0.25rem;">—</div>
+        </div>
+
+        <div>
+          <span id="trackerStatusBadge" class="status-badge status-placed">PLACED</span>
+        </div>
+      </div>
+
+      <!-- Interactive Stepper Progress (5 Steps) -->
+      <div id="trackerStepperWrapper">
+        <div class="stepper-container">
+          <div class="stepper-progress-line">
+            <div id="trackerProgressFill" class="stepper-progress-fill" style="width: 0%;"></div>
+          </div>
+
+          <!-- Step 1: Placed -->
+          <div id="step-PLACED" class="stepper-step">
+            <div class="step-icon-circle">📝</div>
+            <div class="step-title">Order Placed</div>
+            <div class="step-subtext">Received</div>
+          </div>
+
+          <!-- Step 2: Confirmed -->
+          <div id="step-CONFIRMED" class="stepper-step">
+            <div class="step-icon-circle">👨‍🍳</div>
+            <div class="step-title">Confirmed</div>
+            <div class="step-subtext">Accepted</div>
+          </div>
+
+          <!-- Step 3: Preparing -->
+          <div id="step-PREPARING" class="stepper-step">
+            <div class="step-icon-circle">🍳</div>
+            <div class="step-title">Preparing</div>
+            <div class="step-subtext">In Kitchen</div>
+          </div>
+
+          <!-- Step 4: Out for Delivery -->
+          <div id="step-OUT_FOR_DELIVERY" class="stepper-step">
+            <div class="step-icon-circle">🛵</div>
+            <div class="step-title">Out for Delivery</div>
+            <div class="step-subtext">On the Way</div>
+          </div>
+
+          <!-- Step 5: Delivered -->
+          <div id="step-DELIVERED" class="stepper-step">
+            <div class="step-icon-circle">🍽️</div>
+            <div class="step-title">Delivered</div>
+            <div class="step-subtext">Enjoy Meal</div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Cancelled Order Banner (shown only if status is CANCELLED) -->
+      <div id="trackerCancelledBanner" style="display: none; background: #FEE2E2; border: 1px solid #FCA5A5; color: #991B1B; border-radius: var(--radius-md); padding: 1.35rem; margin: 1.5rem 0; text-align: center;">
+        <h3 style="font-family: var(--font-serif); font-size: 1.3rem; margin: 0 0 0.4rem;">⚠️ Order Cancelled</h3>
+        <p style="font-size: 0.95rem; margin: 0;">This order has been cancelled and will not be prepared or dispatched.</p>
+      </div>
+
+      <!-- Live Description Banner -->
+      <div style="background: var(--bg-cream-light); border: 1px solid var(--card-border); border-radius: var(--radius-md); padding: 1.15rem 1.4rem; display: flex; align-items: center; gap: 0.9rem; margin-bottom: 2rem;">
+        <span style="font-size: 1.5rem;">🔔</span>
+        <div>
+          <strong id="trackerStatusHeadline" style="font-size: 0.95rem; color: var(--text-primary);">Order Update:</strong>
+          <span id="trackerStatusDesc" style="font-size: 0.92rem; color: var(--text-secondary); margin-left: 0.3rem;">—</span>
+        </div>
+      </div>
+
+      <!-- Two Column Meta Details -->
+      <div class="tracking-meta-grid" style="display: grid; grid-template-columns: 1.15fr 1fr; gap: 2rem; margin-bottom: 2rem;">
+        
+        <!-- Left: Delivery Details -->
+        <div style="background: var(--bg-cream-light); border: 1px solid var(--card-border); border-radius: var(--radius-md); padding: 1.6rem;">
+          <h3 style="font-family: var(--font-serif); font-size: 1.25rem; margin: 0 0 1rem; color: var(--text-primary);">
+            Delivery Information
+          </h3>
+          <p style="font-size: 0.92rem; line-height: 1.7; color: var(--text-secondary); margin: 0;">
+            <strong>Customer:</strong> <span id="trackerCustomerName">—</span><br />
+            <strong>Phone:</strong> <span id="trackerCustomerPhone">—</span><br />
+            <strong>Address:</strong> <span id="trackerDeliveryAddress">—</span><br />
+            <span id="trackerInstructionsLine" style="display: block; margin-top: 0.4rem; font-size: 0.85rem; color: var(--text-muted);"></span>
+            <span style="display: block; margin-top: 0.6rem; font-size: 0.88rem; color: var(--accent-terracotta); font-weight: 600;">
+              💵 Payment: Pay on Delivery (Cash / UPI at Doorstep)
+            </span>
+          </p>
+        </div>
+
+        <!-- Right: Ordered Dishes & Totals -->
+        <div style="background: #FFFFFF; border: 1px solid var(--card-border); border-radius: var(--radius-md); padding: 1.6rem;">
+          <h3 style="font-family: var(--font-serif); font-size: 1.25rem; margin: 0 0 1rem; color: var(--text-primary);">
+            Dishes Ordered
+          </h3>
+          
+          <div id="trackerItemsList" style="max-height: 190px; overflow-y: auto; margin-bottom: 1rem;">
+            <!-- Populated via JS -->
+          </div>
+
+          <div class="price-breakdown" style="border-top: 1px solid var(--card-border); padding-top: 1rem;">
+            <div class="price-row" style="display: flex; justify-content: space-between; font-size: 0.92rem; margin-bottom: 0.5rem; color: var(--text-secondary);">
+              <span>Items Subtotal</span>
+              <span id="trackerSubtotal" style="font-weight: 600; color: var(--text-primary);">&#8377;0.00</span>
+            </div>
+            <div class="price-row" style="display: flex; justify-content: space-between; font-size: 0.92rem; margin-bottom: 0.5rem; color: var(--text-secondary);">
+              <span>Delivery Fee</span>
+              <span id="trackerDeliveryFee" style="font-weight: 600; color: var(--text-primary);">&#8377;40.00</span>
+            </div>
+            <div class="price-row total-row" style="display: flex; justify-content: space-between; margin-top: 0.8rem; padding-top: 0.8rem; border-top: 2px solid var(--card-border); font-size: 1.25rem; font-weight: 800; color: var(--accent-terracotta);">
+              <span>Final Total</span>
+              <span id="trackerGrandTotal">&#8377;0.00</span>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Action Navigation Buttons -->
+      <div style="display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 1rem; padding-top: 1.5rem; border-top: 1px solid var(--card-border);">
+        <a href="orders.html" class="btn-secondary" style="padding: 0.75rem 1.4rem; border: 1.5px solid var(--card-border); border-radius: 10px; font-weight: 600; text-decoration: none; color: var(--text-primary);">
+          ← Back to My Orders
+        </a>
+        <a href="menu.html" class="btn-primary" style="padding: 0.75rem 1.6rem; border-radius: 10px; font-weight: 700; text-decoration: none;">
+          Order More Food →
+        </a>
+      </div>
+
+      <!-- Quick Action Simulation Box (Optional testing utility for status transitions) -->
+      <div class="status-control-box" style="background: var(--bg-beige); border: 1px dashed var(--accent-terracotta); border-radius: var(--radius-md); padding: 1.4rem; margin-top: 2rem;">
+        <div style="display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 0.6rem; margin-bottom: 0.8rem;">
+          <span style="font-size: 0.85rem; font-weight: 700; color: var(--text-primary);">
+            ⚙️ Interactive Kitchen Status Simulator (Test Lifecycle Transitions in MySQL)
+          </span>
+          <span style="font-size: 0.78rem; color: var(--text-muted);">
+            Saves directly to MySQL database via PATCH REST API
+          </span>
+        </div>
+        
+        <div style="display: flex; gap: 0.5rem; flex-wrap: wrap;">
+          <button class="btn-status-action" data-next-status="CONFIRMED" style="padding: 0.5rem 0.9rem; font-size: 0.82rem; border-radius: 6px; background: #FEF3C7; color: #92400E; border: 1px solid #FCD34D; font-weight: 600; cursor: pointer;">
+            Confirm Order
+          </button>
+          <button class="btn-status-action" data-next-status="PREPARING" style="padding: 0.5rem 0.9rem; font-size: 0.82rem; border-radius: 6px; background: #FFEDD5; color: #9A3412; border: 1px solid #FDBA74; font-weight: 600; cursor: pointer;">
+            Start Cooking
+          </button>
+          <button class="btn-status-action" data-next-status="OUT_FOR_DELIVERY" style="padding: 0.5rem 0.9rem; font-size: 0.82rem; border-radius: 6px; background: #E0F2FE; color: #075985; border: 1px solid #BAE6FD; font-weight: 600; cursor: pointer;">
+            Dispatch Rider
+          </button>
+          <button class="btn-status-action" data-next-status="DELIVERED" style="padding: 0.5rem 0.9rem; font-size: 0.82rem; border-radius: 6px; background: #DCFCE7; color: #166534; border: 1px solid #86EFAC; font-weight: 600; cursor: pointer;">
+            Mark Delivered
+          </button>
+          <button class="btn-status-action" data-next-status="CANCELLED" style="padding: 0.5rem 0.9rem; font-size: 0.82rem; border-radius: 6px; background: #FEE2E2; color: #991B1B; border: 1px solid #FCA5A5; font-weight: 600; cursor: pointer;">
+            Cancel Order
+          </button>
+        </div>
+      </div>
+
+    </article>
+
+  </main>
+
+  <!-- Sliding Cart Drawer -->
+  <aside id="cartDrawer" class="cart-drawer" aria-label="Shopping Tray Drawer">
+    <div class="cart-drawer-header">
+      <div class="drawer-title">
+        <span>🛒</span>
+        <h3>Your Tray</h3>
+      </div>
+      <button id="closeCartBtn" class="close-drawer-btn" aria-label="Close cart">&times;</button>
+    </div>
+
+    <div id="cartItemsList" class="cart-items-body">
+      <!-- Injected by JavaScript -->
+    </div>
+
+    <div class="cart-drawer-footer">
+      <div class="cart-summary-line">
+        <span>Subtotal</span>
+        <span id="cartSubtotal">&#8377;0.00</span>
+      </div>
+      <div class="cart-summary-line">
+        <span>Delivery Fee</span>
+        <span>&#8377;40.00</span>
+      </div>
+      <div class="cart-summary-line total-line">
+        <span>Estimated Total</span>
+        <span id="cartTotal">&#8377;0.00</span>
+      </div>
+      <button id="checkoutBtn" class="btn-checkout">
+        Review & Checkout →
+      </button>
+    </div>
+  </aside>
+  <div id="cartDrawerOverlay" class="cart-drawer-overlay"></div>
+
+  <!-- Toast Notification Container -->
+  <div id="toastContainer" class="toast-container"></div>
+
+  <!-- Scripts -->
+  <script src="js/main.js?v=2.6"></script>
+</body>
+</html>

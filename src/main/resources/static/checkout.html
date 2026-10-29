@@ -1,0 +1,752 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Dineflow - Checkout & Delivery</title>
+  <link rel="stylesheet" href="css/style.css?v=2.6" />
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,500;0,600;0,700;1,400&family=Plus+Jakarta+Sans:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+  
+  <style>
+    :root {
+      --bg-cream: #FAF7F2;
+      --bg-cream-light: #FFFDF9;
+      --bg-beige: #F2EBE1;
+      --bg-beige-deep: #E7DDCE;
+      --card-bg: #FFFFFF;
+      --card-border: #E8DFD3;
+      --accent-terracotta: #C86D3B;
+      --accent-terracotta-hover: #AF5B2D;
+      --accent-terracotta-soft: rgba(200, 109, 59, 0.12);
+      --accent-green: #3F704D;
+      --accent-green-soft: rgba(63, 112, 77, 0.12);
+      --text-primary: #2C231C;
+      --text-secondary: #6B5E53;
+      --text-muted: #9C8F84;
+      --radius-sm: 8px;
+      --radius-md: 14px;
+      --radius-lg: 20px;
+      --radius-pill: 999px;
+      --font-serif: 'Playfair Display', Georgia, serif;
+      --font-sans: 'Plus Jakarta Sans', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+    }
+
+    body {
+      background-color: var(--bg-cream);
+      color: var(--text-primary);
+      font-family: var(--font-sans);
+      margin: 0;
+      padding: 0;
+      overflow-x: hidden;
+      -webkit-font-smoothing: antialiased;
+    }
+
+    .checkout-page-header {
+      text-align: center;
+      padding: 3rem 1.5rem 2.2rem;
+      background: linear-gradient(180deg, var(--bg-beige) 0%, var(--bg-cream) 100%);
+      border-bottom: 1px solid var(--card-border);
+    }
+
+    .checkout-page-header .section-subtitle {
+      display: inline-block;
+      font-size: 0.8rem;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.14em;
+      color: var(--accent-terracotta);
+      margin-bottom: 0.5rem;
+    }
+
+    .checkout-page-header .section-title {
+      font-family: var(--font-serif);
+      font-size: 2.35rem;
+      font-weight: 700;
+      color: var(--text-primary);
+      margin: 0 0 0.6rem;
+      letter-spacing: -0.02em;
+    }
+
+    .checkout-page-header .section-desc {
+      font-size: 1rem;
+      color: var(--text-secondary);
+      max-width: 600px;
+      margin: 0 auto 1.5rem;
+      line-height: 1.6;
+    }
+
+    .checkout-stepper {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.75rem;
+      background: #FFFFFF;
+      padding: 0.55rem 1.35rem;
+      border-radius: var(--radius-pill);
+      border: 1px solid var(--card-border);
+      box-shadow: 0 2px 8px rgba(44, 35, 28, 0.04);
+      font-size: 0.85rem;
+      color: var(--text-muted);
+    }
+
+    .checkout-stepper .step-item {
+      display: flex;
+      align-items: center;
+      gap: 0.4rem;
+    }
+
+    .checkout-stepper .step-item.active {
+      color: var(--accent-terracotta);
+      font-weight: 700;
+    }
+
+    .checkout-stepper .step-item.completed {
+      color: var(--accent-green);
+      font-weight: 600;
+    }
+
+    .checkout-stepper .step-separator {
+      color: var(--card-border);
+      font-weight: 300;
+    }
+
+    .checkout-grid {
+      max-width: 1180px;
+      margin: 2.5rem auto 5rem;
+      padding: 0 1.5rem;
+      display: grid;
+      grid-template-columns: 1.35fr 1fr;
+      gap: 2.25rem;
+      align-items: start;
+      box-sizing: border-box;
+    }
+
+    @media (max-width: 960px) {
+      .checkout-grid {
+        grid-template-columns: 1fr;
+        gap: 2rem;
+        margin-top: 1.8rem;
+      }
+    }
+
+    .checkout-card {
+      background: #FFFFFF;
+      border: 1px solid var(--card-border);
+      border-radius: var(--radius-lg);
+      padding: 2.25rem;
+      box-shadow: 0 10px 30px rgba(44, 35, 28, 0.05), 0 1px 3px rgba(44, 35, 28, 0.03);
+      box-sizing: border-box;
+    }
+
+    .checkout-card.sticky-card {
+      position: sticky;
+      top: 90px;
+    }
+
+    .checkout-card-header {
+      display: flex;
+      align-items: center;
+      gap: 0.85rem;
+      margin-bottom: 1.6rem;
+      padding-bottom: 1.1rem;
+      border-bottom: 1px solid var(--card-border);
+    }
+
+    .checkout-card-header .header-icon-box {
+      width: 44px;
+      height: 44px;
+      border-radius: 12px;
+      background: var(--accent-terracotta-soft);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 1.35rem;
+      color: var(--accent-terracotta);
+      flex-shrink: 0;
+    }
+
+    .checkout-card-header .header-text h2 {
+      font-family: var(--font-serif);
+      font-size: 1.38rem;
+      font-weight: 700;
+      color: var(--text-primary);
+      margin: 0;
+      line-height: 1.25;
+    }
+
+    .checkout-card-header .header-text p {
+      font-size: 0.84rem;
+      color: var(--text-secondary);
+      margin: 0.2rem 0 0;
+    }
+
+    .form-row {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 1.25rem;
+      margin-bottom: 1.25rem;
+    }
+
+    @media (max-width: 600px) {
+      .form-row {
+        grid-template-columns: 1fr;
+        gap: 1rem;
+      }
+    }
+
+    .form-group {
+      margin-bottom: 1.35rem;
+      display: flex;
+      flex-direction: column;
+    }
+
+    .form-group label {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      font-weight: 600;
+      font-size: 0.88rem;
+      color: var(--text-primary);
+      margin-bottom: 0.5rem;
+    }
+
+    .form-group label .required-star {
+      color: #C84B31;
+      font-weight: 700;
+      margin-left: 2px;
+    }
+
+    .form-group label small {
+      font-weight: 400;
+      font-size: 0.78rem;
+      color: var(--text-muted);
+    }
+
+    .form-input,
+    .form-textarea {
+      width: 100% !important;
+      box-sizing: border-box !important;
+      padding: 0.82rem 1.05rem !important;
+      font-family: var(--font-sans) !important;
+      font-size: 0.95rem !important;
+      color: var(--text-primary) !important;
+      background: #FAF8F5 !important;
+      border: 1.5px solid var(--card-border) !important;
+      border-radius: 10px !important;
+      transition: all 0.22s ease !important;
+      outline: none !important;
+    }
+
+    .form-input {
+      height: 48px;
+    }
+
+    .form-textarea {
+      min-height: 96px;
+      resize: vertical;
+      line-height: 1.5;
+    }
+
+    .form-input:focus,
+    .form-textarea:focus {
+      background: #FFFFFF !important;
+      border-color: var(--accent-terracotta) !important;
+      box-shadow: 0 0 0 3.5px var(--accent-terracotta-soft) !important;
+    }
+
+    .form-input.is-invalid,
+    .form-textarea.is-invalid {
+      border-color: #D9381E !important;
+      background: #FFF9F8 !important;
+    }
+
+    .field-error-msg {
+      display: none;
+      font-size: 0.8rem;
+      color: #D9381E;
+      margin-top: 0.4rem;
+      font-weight: 500;
+    }
+
+    .payment-method-card {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 1.15rem 1.3rem;
+      background: #FFFDF9;
+      border: 2px solid var(--accent-terracotta);
+      border-radius: 14px;
+      margin-top: 0.3rem;
+    }
+
+    .payment-method-info {
+      display: flex;
+      align-items: center;
+      gap: 0.9rem;
+    }
+
+    .payment-method-info .pay-icon {
+      font-size: 1.8rem;
+      background: var(--accent-terracotta-soft);
+      width: 44px;
+      height: 44px;
+      border-radius: 10px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      flex-shrink: 0;
+    }
+
+    .payment-method-info h4 {
+      font-size: 0.95rem;
+      font-weight: 700;
+      color: var(--text-primary);
+      margin: 0 0 0.2rem;
+    }
+
+    .payment-method-info p {
+      font-size: 0.82rem;
+      color: var(--text-secondary);
+      margin: 0;
+    }
+
+    .pay-badge {
+      background: var(--accent-green-soft);
+      color: var(--accent-green);
+      font-weight: 700;
+      font-size: 0.78rem;
+      padding: 0.3rem 0.75rem;
+      border-radius: var(--radius-pill);
+      white-space: nowrap;
+      border: 1px solid rgba(63, 112, 77, 0.2);
+    }
+
+    .summary-items-list {
+      max-height: 290px;
+      overflow-y: auto;
+      margin-bottom: 1.25rem;
+      padding-right: 0.4rem;
+    }
+
+    .summary-item-row {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 0.85rem 0;
+      border-bottom: 1px dashed var(--card-border);
+    }
+
+    .summary-item-row:last-child {
+      border-bottom: none;
+    }
+
+    .summary-item-thumb {
+      width: 48px;
+      height: 48px;
+      border-radius: var(--radius-sm);
+      object-fit: cover;
+      margin-right: 0.85rem;
+      background: var(--bg-beige);
+      flex-shrink: 0;
+    }
+
+    .summary-item-info {
+      flex: 1;
+      min-width: 0;
+    }
+
+    .summary-item-title {
+      font-weight: 600;
+      font-size: 0.93rem;
+      color: var(--text-primary);
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      margin-bottom: 0.2rem;
+    }
+
+    .summary-item-meta {
+      font-size: 0.82rem;
+      color: var(--text-muted);
+    }
+
+    .summary-item-price {
+      font-weight: 700;
+      font-size: 0.98rem;
+      color: var(--text-primary);
+      margin-left: 0.85rem;
+      white-space: nowrap;
+    }
+
+    .price-breakdown {
+      border-top: 1px solid var(--card-border);
+      padding-top: 1.1rem;
+      margin-top: 0.5rem;
+    }
+
+    .price-row {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      font-size: 0.92rem;
+      color: var(--text-secondary);
+      margin-bottom: 0.65rem;
+    }
+
+    .price-row.total-row {
+      margin-top: 0.85rem;
+      padding-top: 0.95rem;
+      border-top: 2px solid var(--card-border);
+      font-size: 1.3rem;
+      font-weight: 800;
+      color: var(--accent-terracotta);
+    }
+
+    .btn-place-order {
+      width: 100%;
+      height: 52px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 0.6rem;
+      background: var(--accent-terracotta);
+      color: #FFFFFF;
+      border-radius: 12px;
+      font-weight: 700;
+      font-size: 1.05rem;
+      box-shadow: 0 4px 16px rgba(200, 109, 59, 0.28);
+      transition: all 0.24s cubic-bezier(0.4, 0, 0.2, 1);
+      margin-top: 1.4rem;
+      cursor: pointer;
+      border: none;
+    }
+
+    .btn-place-order:hover:not(:disabled) {
+      background: var(--accent-terracotta-hover);
+      transform: translateY(-2px);
+      box-shadow: 0 8px 24px rgba(200, 109, 59, 0.38);
+    }
+
+    .btn-place-order:disabled {
+      background: var(--text-muted);
+      cursor: not-allowed;
+      box-shadow: none;
+      opacity: 0.65;
+    }
+
+    .empty-cart-checkout-notice {
+      text-align: center;
+      padding: 3rem 1.75rem;
+      background: #FFFDF9;
+      border: 1.5px dashed var(--accent-terracotta);
+      border-radius: 16px;
+      margin-bottom: 0.5rem;
+    }
+
+    .empty-cart-checkout-notice .empty-icon {
+      font-size: 3rem;
+      margin-bottom: 0.8rem;
+    }
+
+    .empty-cart-checkout-notice h3 {
+      font-family: var(--font-serif);
+      font-size: 1.35rem;
+      margin-bottom: 0.45rem;
+      color: var(--text-primary);
+    }
+
+    .empty-cart-checkout-notice p {
+      color: var(--text-secondary);
+      font-size: 0.92rem;
+      margin-bottom: 1.4rem;
+      line-height: 1.5;
+    }
+
+    .btn-browse-menu {
+      display: inline-block;
+      background: var(--accent-terracotta);
+      color: #FFFFFF;
+      padding: 0.75rem 1.6rem;
+      border-radius: 10px;
+      font-weight: 700;
+      font-size: 0.92rem;
+      box-shadow: 0 4px 12px rgba(200, 109, 59, 0.25);
+      text-decoration: none;
+    }
+
+    .btn-browse-menu:hover {
+      background: var(--accent-terracotta-hover);
+      transform: translateY(-1px);
+    }
+  </style>
+</head>
+<body>
+
+  <!-- Top Announcement Bar -->
+  <aside class="top-bar" aria-label="Announcement">
+    <div class="top-bar-inner">
+      <span>✨ Artisanal Kitchen — Freshly prepared upon order placement</span>
+      <div id="backendStatusPill" class="server-badge">
+        <span class="server-dot"></span> Spring Boot Backend: Online
+      </div>
+    </div>
+  </aside>
+
+  <!-- Navigation Bar -->
+  <header>
+    <nav class="navbar" aria-label="Main Navigation">
+      <div class="nav-container">
+        <!-- Logo -->
+        <a href="/" class="brand-logo">
+          <div class="brand-logo-icon">🍽️</div>
+          <span class="brand-name">Dine<span>flow</span></span>
+        </a>
+
+        <!-- Desktop Navigation Links -->
+        <ul class="nav-links">
+          <li><a href="/">Home</a></li>
+          <li><a href="menu.html">Full Menu</a></li>
+          <li><a href="orders.html">My Orders</a></li>
+          <li><a href="track-order.html">Track Order</a></li>
+          <li><a href="/#about">Our Story</a></li>
+        </ul>
+
+        <!-- Action Buttons -->
+        <div class="nav-actions">
+          <button id="openCartBtn" class="cart-btn" title="View Order Tray" aria-label="View Order Tray">
+            🛒
+            <span id="cartBadge" class="cart-badge">0</span>
+          </button>
+          <a href="menu.html" class="btn-primary" style="padding: 0.68rem 1.35rem; font-size: 0.9rem; font-weight: 700; text-decoration: none;">
+            Order Food
+          </a>
+        </div>
+      </div>
+    </nav>
+  </header>
+
+  <!-- Page Header with Step Breadcrumb -->
+  <header class="checkout-page-header">
+    <span class="section-subtitle">Secure & Seamless Ordering</span>
+    <h1 class="section-title">Checkout & Delivery</h1>
+    <p class="section-desc">
+      Review your artisanal selections, enter your delivery address, and place your order directly with our kitchen.
+    </p>
+
+    <!-- Stepper Breadcrumb -->
+    <div class="checkout-stepper" aria-label="Order Progress">
+      <div class="step-item completed">
+        <span>✓</span> <span>1. Order Tray</span>
+      </div>
+      <span class="step-separator">───</span>
+      <div class="step-item active">
+        <span>●</span> <span>2. Delivery Details</span>
+      </div>
+      <span class="step-separator">───</span>
+      <div class="step-item">
+        <span>○</span> <span>3. Kitchen Confirmation</span>
+      </div>
+    </div>
+  </header>
+
+  <!-- Main Checkout Grid -->
+  <main class="checkout-grid">
+    
+    <!-- Left Column: Delivery Form -->
+    <section class="checkout-card" aria-labelledby="delivery-heading">
+      <div class="checkout-card-header">
+        <div class="header-icon-box">🚚</div>
+        <div class="header-text">
+          <h2 id="delivery-heading">Delivery Information</h2>
+          <p>Where should our delivery team bring your freshly prepared meal?</p>
+        </div>
+      </div>
+
+      <form id="orderCheckoutForm" novalidate>
+        <!-- Backend API Error Banner -->
+        <div id="checkoutErrorBanner" style="display: none; background: #FFF0ED; border: 1px solid #FFC5BA; color: #A93822; padding: 0.85rem 1rem; border-radius: var(--radius-sm); margin-bottom: 1.25rem; font-size: 0.9rem;">
+          <strong>Error:</strong> <span id="checkoutErrorMessage">Unable to place order.</span>
+        </div>
+
+        <div class="form-row">
+          <div class="form-group">
+            <label for="customerName">
+              <span>Full Name <span class="required-star">*</span></span>
+            </label>
+            <input 
+              type="text" 
+              id="customerName" 
+              name="customerName" 
+              class="form-input" 
+              placeholder="e.g. Rohan Sharma" 
+              required 
+            />
+            <div id="customerNameError" class="field-error-msg" style="display: none;">
+              ⚠️ Please enter your full name (minimum 2 characters).
+            </div>
+          </div>
+
+          <div class="form-group">
+            <label for="customerPhone">
+              <span>Phone Number <span class="required-star">*</span></span>
+            </label>
+            <input 
+              type="tel" 
+              id="customerPhone" 
+              name="customerPhone" 
+              class="form-input" 
+              placeholder="e.g. 9876543210" 
+              required 
+            />
+            <div id="customerPhoneError" class="field-error-msg" style="display: none;">
+              ⚠️ Please enter a valid contact phone number.
+            </div>
+          </div>
+        </div>
+
+        <div class="form-group">
+          <label for="deliveryAddress">
+            <span>Delivery Address <span class="required-star">*</span></span>
+          </label>
+          <textarea 
+            id="deliveryAddress" 
+            name="deliveryAddress" 
+            class="form-textarea" 
+            placeholder="Flat / House No., Building, Street Name, Landmark, Area, City" 
+            rows="3" 
+            required
+          ></textarea>
+          <div id="deliveryAddressError" class="field-error-msg" style="display: none;">
+            ⚠️ Please provide your complete delivery address.
+          </div>
+        </div>
+
+        <div class="form-group">
+          <label for="deliveryInstructions">
+            <span>Delivery Instructions</span>
+            <small>(Optional)</small>
+          </label>
+          <textarea 
+            id="deliveryInstructions" 
+            name="deliveryInstructions" 
+            class="form-textarea" 
+            placeholder="e.g. Leave at front door, ring bell twice, call upon arrival..." 
+            rows="2"
+          ></textarea>
+        </div>
+
+        <div class="form-group">
+          <label><span>Payment Method</span></label>
+          <div class="payment-method-card">
+            <div class="payment-method-info">
+              <span class="pay-icon">💵</span>
+              <div>
+                <h4>Pay on Delivery (Cash / UPI at Doorstep)</h4>
+                <p>Pay conveniently when your order arrives via UPI QR or Cash.</p>
+              </div>
+            </div>
+            <span class="pay-badge">✓ Selected</span>
+          </div>
+        </div>
+      </form>
+    </section>
+
+    <!-- Right Column: Order Summary (Sticky) -->
+    <aside class="checkout-card sticky-card" aria-labelledby="summary-heading">
+      <div class="checkout-card-header">
+        <div class="header-icon-box">🧺</div>
+        <div class="header-text">
+          <h2 id="summary-heading">Order Summary</h2>
+          <p>Itemized review & verified pricing</p>
+        </div>
+      </div>
+
+      <!-- Empty Cart State -->
+      <div id="checkoutEmptyNotice" class="empty-cart-checkout-notice" style="display: none;">
+        <div class="empty-icon">🍽️</div>
+        <h3>Your Tray is Empty</h3>
+        <p>You cannot checkout without any items. Discover our chef-curated artisanal dishes from the menu.</p>
+        <a href="menu.html" class="btn-browse-menu">
+          Explore Menu →
+        </a>
+      </div>
+
+      <!-- Active Cart Items & Calculation -->
+      <div id="checkoutItemsContainer">
+        <div id="checkoutItemsList" class="summary-items-list">
+          <!-- Dynamically populated from cart in main.js -->
+        </div>
+
+        <div class="price-breakdown">
+          <div class="price-row">
+            <span>Items Subtotal</span>
+            <span id="checkoutSubtotal" style="font-weight: 600; color: var(--text-primary);">&#8377;0.00</span>
+          </div>
+          <div class="price-row">
+            <span>Standard Delivery</span>
+            <span id="checkoutDeliveryFee" style="font-weight: 600; color: var(--text-primary);">&#8377;40.00</span>
+          </div>
+          <div class="price-row">
+            <span>Packaging & Taxes</span>
+            <span style="font-weight: 600; color: var(--accent-green);">Included (Free)</span>
+          </div>
+          <div class="price-row total-row">
+            <span>Final Total</span>
+            <span id="checkoutGrandTotal">&#8377;0.00</span>
+          </div>
+        </div>
+
+        <button type="button" id="submitOrderBtn" class="btn-place-order">
+          <span>Place Order</span>
+        </button>
+
+        <p style="font-size: 0.8rem; color: var(--text-muted); text-align: center; margin-top: 1rem; line-height: 1.4;">
+          🔒 Secure checkout • Prices verified directly with Dineflow database.
+        </p>
+      </div>
+    </aside>
+
+  </main>
+
+  <!-- Sliding Cart Drawer (for convenience) -->
+  <aside id="cartDrawer" class="cart-drawer" aria-label="Shopping Tray Drawer">
+    <div class="cart-drawer-header">
+      <div class="drawer-title">
+        <span>🛒</span>
+        <h3>Your Tray</h3>
+      </div>
+      <button id="closeCartBtn" class="close-drawer-btn" aria-label="Close cart">&times;</button>
+    </div>
+
+    <div id="cartItemsList" class="cart-items-body">
+      <!-- Injected by JavaScript -->
+    </div>
+
+    <div class="cart-drawer-footer">
+      <div class="cart-summary-line">
+        <span>Subtotal</span>
+        <span id="cartSubtotal">&#8377;0.00</span>
+      </div>
+      <div class="cart-summary-line">
+        <span>Delivery Fee</span>
+        <span>&#8377;40.00</span>
+      </div>
+      <div class="cart-summary-line total-line">
+        <span>Estimated Total</span>
+        <span id="cartTotal">&#8377;0.00</span>
+      </div>
+      <button id="checkoutBtn" class="btn-checkout">
+        Review & Checkout →
+      </button>
+    </div>
+  </aside>
+  <div id="cartDrawerOverlay" class="cart-drawer-overlay"></div>
+
+  <!-- Toast Notification Container -->
+  <div id="toastContainer" class="toast-container"></div>
+
+  <!-- Scripts -->
+  <script src="js/main.js?v=2.6"></script>
+</body>
+</html>

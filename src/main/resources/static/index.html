@@ -1,0 +1,417 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Dineflow - Artisanal Dining & Online Ordering</title>
+  <link rel="stylesheet" href="css/style.css?v=2.5" />
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+</head>
+<body>
+
+  <!-- Top Announcement Bar -->
+  <aside class="top-bar" aria-label="Announcement">
+    <div class="top-bar-inner">
+      <span>✨ Welcome to Dineflow — Handcrafted seasonal tasting menu now available</span>
+      <div id="backendStatusPill" class="server-badge">
+        <span class="server-dot"></span> Spring Boot Backend: Online
+      </div>
+    </div>
+  </aside>
+
+  <!-- Navigation Bar -->
+  <header>
+    <nav class="navbar" aria-label="Main Navigation">
+      <div class="nav-container">
+        <!-- Logo -->
+        <a href="#" class="brand-logo">
+          <div class="brand-logo-icon">🍽️</div>
+          <span class="brand-name">Dine<span>flow</span></span>
+        </a>
+
+        <!-- Desktop Navigation Links -->
+        <ul class="nav-links">
+          <li><a href="#" class="active">Home</a></li>
+          <li><a href="menu.html">Full Menu</a></li>
+          <li><a href="orders.html">My Orders</a></li>
+          <li><a href="track-order.html">Track Order</a></li>
+          <li><a href="#about">Our Story</a></li>
+        </ul>
+
+        <!-- Action Buttons -->
+        <div class="nav-actions">
+          <button id="openCartBtn" class="cart-btn" title="View Order Tray" aria-label="View Order Tray">
+            🛒
+            <span id="cartBadge" class="cart-badge">0</span>
+          </button>
+          <a href="menu.html" class="btn-primary" style="padding: 0.65rem 1.25rem; font-size: 0.88rem; font-weight: 700; text-decoration: none;">
+            Order Food
+          </a>
+          <button class="btn-reserve btn-open-reserve">
+            <span>📅</span> Reserve Table
+          </button>
+        </div>
+      </div>
+    </nav>
+  </header>
+
+  <!-- Hero Section -->
+  <main>
+    <section id="hero" class="hero">
+      <div class="hero-container">
+        <div class="hero-content">
+          <div class="hero-tag">
+            <span>🌿</span> 100% Organic & Farm-to-Table
+          </div>
+          <h1 class="hero-title">
+            Welcome to Dineflow!
+          </h1>
+          <p class="hero-desc">
+            Savor the art of fine dining. Artisanal dishes crafted with passion, farm-fresh ingredients, and unforgettable culinary craftsmanship in a warm, welcoming ambiance.
+          </p>
+
+          <div class="hero-cta">
+            <a href="menu.html" class="btn-primary">
+              <span>🍽️</span> Explore Full Menu
+            </a>
+            <button class="btn-secondary btn-open-reserve">
+              <span>📅</span> Book a Table
+            </button>
+          </div>
+
+          <div class="hero-stats">
+            <div class="stat-item">
+              <h4>4.9 ★</h4>
+              <p>2,400+ Verified Reviews</p>
+            </div>
+            <div class="stat-item">
+              <h4>30 min</h4>
+              <p>Average Prep & Serving</p>
+            </div>
+            <div class="stat-item">
+              <h4>100%</h4>
+              <p>Fresh Daily Sourcing</p>
+            </div>
+          </div>
+        </div>
+
+        <!-- Hero Showcase Visual -->
+        <div class="hero-media">
+          <div class="hero-image-card">
+            <img 
+              src="https://images.unsplash.com/photo-1555396273-367ea4eb4db5?w=1000&auto=format&fit=crop&q=80" 
+              alt="Artisanal Dining Table at Dineflow" 
+            />
+          </div>
+          <div class="hero-floating-card">
+            <div class="floating-icon">✨</div>
+            <div class="floating-text">
+              <h5>Chef's Recommendation</h5>
+              <p>Saffron Truffle Risotto • ₹520.00</p>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Features / Value Propositions -->
+    <section id="features" class="features-section">
+      <div class="features-container">
+        <div class="feature-box">
+          <div class="feature-icon">🌱</div>
+          <h4>Farm-to-Table Fresh</h4>
+          <p>Every vegetable, herb, and cut of meat is sourced sustainably from certified regional organic farms.</p>
+        </div>
+        <div class="feature-box">
+          <div class="feature-icon">👨‍🍳</div>
+          <h4>Master Chefs</h4>
+          <p>Our culinary team brings world-class experience, infusing every dish with balanced modern flair.</p>
+        </div>
+        <div class="feature-box">
+          <div class="feature-icon">🕯️</div>
+          <h4>Warm & Cozy Ambiance</h4>
+          <p>Unwind in a serene, cream-and-wood acoustic space tailored for intimate conversations and gatherings.</p>
+        </div>
+        <div class="feature-box">
+          <div class="feature-icon">⚡</div>
+          <h4>Seamless Ordering</h4>
+          <p>Instant table-side QR ordering, takeaway pre-orders, and contactless digital dining options.</p>
+        </div>
+      </div>
+    </section>
+
+    <!-- Featured Food Cards Section -->
+    <section id="menu" class="menu-section">
+      <div class="section-header">
+        <span class="section-subtitle">Curated Offerings</span>
+        <h2 class="section-title">Explore Our Menu</h2>
+        <p class="section-desc">
+          Handcrafted seasonal specialties prepared to order with delicate spice harmonies and rich, natural aromas.
+        </p>
+      </div>
+
+      <!-- Category Filter Tabs -->
+      <div class="filter-tabs">
+        <button class="filter-btn active" data-filter="all">All Dishes</button>
+        <button class="filter-btn" data-filter="main">Main Courses</button>
+        <button class="filter-btn" data-filter="pizzas">Artisanal Pizzas</button>
+        <button class="filter-btn" data-filter="starters">Starters & Salads</button>
+        <button class="filter-btn" data-filter="desserts">Desserts</button>
+        <button class="filter-btn" data-filter="beverages">Botanical Drinks</button>
+      </div>
+
+      <!-- Food Cards Grid (Dynamic JS Injection) -->
+      <div id="menuGrid" class="menu-grid">
+        <!-- Rendered by main.js -->
+      </div>
+    </section>
+
+    <!-- About Section -->
+    <section id="about" class="about-section">
+      <div class="about-container">
+        <div class="about-image-card">
+          <img 
+            src="https://images.unsplash.com/photo-1559339352-11d035aa65de?w=800&auto=format&fit=crop&q=80" 
+            alt="Chef crafting culinary dish" 
+          />
+        </div>
+        <div class="about-content">
+          <span class="section-subtitle">The Dineflow Philosophy</span>
+          <h2>Where Culinary Passion Meets Heartfelt Hospitality</h2>
+          <p>
+            Dineflow was born out of a simple belief: dining out should be more than just eating a meal — it should be a restorative sensory escape. From our hand-kneaded 48-hour fermented doughs to slow-reduced sauces, we honor age-old culinary techniques while embracing mindful modern cooking.
+          </p>
+          <div class="about-highlights">
+            <div class="highlight-item">
+              <span class="highlight-icon">✔️</span>
+              <div>
+                <h5>Scratch-Made Daily</h5>
+                <p>All pasta, breads, and broths are made fresh every morning.</p>
+              </div>
+            </div>
+            <div class="highlight-item">
+              <span class="highlight-icon">✔️</span>
+              <div>
+                <h5>Allergen Conscious</h5>
+                <p>Gluten-free, vegan, and nut-safe menus handled with separate prep stations.</p>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Reservation CTA Banner -->
+    <section class="reservation-banner">
+      <div class="reservation-banner-inner">
+        <h2>Reserve Your Dining Experience</h2>
+        <p>Planning an intimate dinner, birthday celebration, or business banquet? We invite you to book your table in advance.</p>
+        <button class="btn-primary btn-open-reserve">
+          <span>📅</span> Book a Table Now
+        </button>
+      </div>
+    </section>
+  </main>
+
+  <!-- Footer -->
+  <footer id="contact" class="footer">
+    <div class="footer-container">
+      <div class="footer-brand">
+        <a href="#" class="brand-logo">
+          <div class="brand-logo-icon">🍽️</div>
+          <span class="brand-name">Dine<span>flow</span></span>
+        </a>
+        <p>
+          A sanctuary for fine gastronomy and shared memories. Warm vibes, honest ingredients, and extraordinary flavors.
+        </p>
+      </div>
+
+      <div class="footer-col">
+        <h4>Navigation</h4>
+        <ul>
+          <li><a href="#hero">Home</a></li>
+          <li><a href="#menu">Explore Menu</a></li>
+          <li><a href="#features">Experience</a></li>
+          <li><a href="#about">Our Story</a></li>
+        </ul>
+      </div>
+
+      <div class="footer-col">
+        <h4>Opening Hours</h4>
+        <ul class="hours-list">
+          <li><span>Mon – Thu:</span> <span>11:30 AM – 10:00 PM</span></li>
+          <li><span>Fri – Sat:</span> <span>11:00 AM – 11:30 PM</span></li>
+          <li><span>Sunday:</span> <span>10:30 AM – 9:30 PM</span></li>
+        </ul>
+      </div>
+
+      <div class="footer-col">
+        <h4>Find Us</h4>
+        <p style="color:#B5A89D; font-size:0.9rem; margin-bottom:0.7rem;">
+          📍 142 Gourmet Boulevard, Culinary District<br/>
+          📞 (555) 346-3356<br/>
+          ✉️ reservations@dineflow.com
+        </p>
+      </div>
+    </div>
+
+    <div class="footer-bottom">
+      <p>&copy; 2026 Dineflow Restaurant Group. All rights reserved.</p>
+      <p>Powered by Java Spring Boot</p>
+    </div>
+  </footer>
+
+  <!-- Slide-in Cart Drawer -->
+  <div id="cartDrawerOverlay" class="cart-drawer-overlay"></div>
+  <aside id="cartDrawer" class="cart-drawer" aria-label="Shopping Cart">
+    <div class="cart-header">
+      <h3>Your Order Tray</h3>
+      <button id="closeCartBtn" class="modal-close" aria-label="Close cart">&times;</button>
+    </div>
+    <div id="cartItemsList" class="cart-body">
+      <!-- Populated by JS -->
+    </div>
+    <div class="cart-footer">
+      <div class="cart-price-breakdown">
+        <div class="cart-breakdown-row">
+          <span>Subtotal:</span>
+          <span id="cartSubtotal">₹0.00</span>
+        </div>
+        <div class="cart-breakdown-row">
+          <span>GST (5%):</span>
+          <span id="cartTax">₹0.00</span>
+        </div>
+      </div>
+      <div class="cart-total-row">
+        <span>Grand Total:</span>
+        <span id="cartTotal">₹0.00</span>
+      </div>
+      <button id="checkoutBtn" class="btn-checkout">Proceed to Checkout</button>
+    </div>
+  </aside>
+
+  <!-- Checkout & Order Placement Modal -->
+  <div id="checkoutModal" class="modal-overlay" role="dialog" aria-modal="true">
+    <div class="modal-card">
+      <button id="closeCheckoutModal" class="modal-close" aria-label="Close modal">&times;</button>
+      <div class="modal-header">
+        <h3>Complete Your Order</h3>
+        <p>Confirm your details to send your order straight to the kitchen.</p>
+      </div>
+
+      <form id="checkoutForm">
+        <div class="form-group">
+          <label for="orderName">Customer Name</label>
+          <input type="text" id="orderName" class="form-control" placeholder="e.g. Priya Sharma" required />
+        </div>
+        <div class="form-row">
+          <div class="form-group">
+            <label for="orderPhone">Phone Number</label>
+            <input type="tel" id="orderPhone" class="form-control" placeholder="10-digit mobile number" required />
+          </div>
+          <div class="form-group">
+            <label for="orderDiningType">Dining Option</label>
+            <select id="orderDiningType" class="form-control">
+              <option value="Dine-in (Table 1)">Dine-in (Table 1)</option>
+              <option value="Dine-in (Table 2)">Dine-in (Table 2)</option>
+              <option value="Dine-in (Table 3)">Dine-in (Table 3)</option>
+              <option value="Takeaway Pickup">Takeaway Counter Pickup</option>
+              <option value="Home Delivery">Doorstep Delivery</option>
+            </select>
+          </div>
+        </div>
+
+        <div style="background: var(--bg-cream); padding: 1rem; border-radius: var(--radius-sm); border: 1px solid var(--card-border); margin-bottom: 1.2rem;">
+          <div style="display: flex; justify-content: space-between; font-weight: 700; color: var(--text-primary); font-size: 1.05rem;">
+            <span>Payable Amount:</span>
+            <span id="checkoutPayableAmount" style="color: var(--accent-terracotta);">₹0.00</span>
+          </div>
+        </div>
+
+        <button type="submit" class="btn-primary" style="width: 100%; justify-content: center;">
+          Place Order via Spring Boot Backend
+        </button>
+      </form>
+    </div>
+  </div>
+
+  <!-- Order Receipt Modal -->
+  <div id="receiptModal" class="modal-overlay" role="dialog" aria-modal="true">
+    <div class="modal-card" style="text-align: center;">
+      <button id="closeReceiptModal" class="modal-close" aria-label="Close receipt">&times;</button>
+      <div class="receipt-header">
+        <div class="receipt-icon">🎉</div>
+        <h3 style="font-family: var(--font-serif); font-size: 1.8rem; color: var(--text-primary);">Order Confirmed!</h3>
+        <p style="color: var(--text-secondary); margin-top: 0.3rem;">The Dineflow kitchen has received your order.</p>
+        <div id="receiptOrderId" class="order-id-badge">Order ID: DF-000000</div>
+      </div>
+      <div id="receiptSummary" style="text-align: left; background: var(--bg-cream); padding: 1.2rem; border-radius: var(--radius-sm); border: 1px solid var(--card-border); margin-bottom: 1.5rem; font-size: 0.92rem;">
+        <!-- Populated on order success -->
+      </div>
+      <button id="receiptDoneBtn" class="btn-primary" style="width: 100%; justify-content: center;">
+        Done & Continue Exploring
+      </button>
+    </div>
+  </div>
+
+  <!-- Reservation Modal -->
+  <div id="reservationModal" class="modal-overlay" role="dialog" aria-modal="true">
+    <div class="modal-card">
+      <button id="closeReserveModal" class="modal-close" aria-label="Close modal">&times;</button>
+      <div class="modal-header">
+        <h3>Reserve a Table</h3>
+        <p>Join us for an unforgettable dining journey at Dineflow.</p>
+      </div>
+      <form id="reservationForm">
+        <div class="form-group">
+          <label for="resName">Full Name</label>
+          <input type="text" id="resName" class="form-control" placeholder="e.g. Alexander Vance" required />
+        </div>
+        <div class="form-row">
+          <div class="form-group">
+            <label for="resPhone">Phone Number</label>
+            <input type="tel" id="resPhone" class="form-control" placeholder="(555) 000-0000" required />
+          </div>
+          <div class="form-group">
+            <label for="resGuests">Number of Guests</label>
+            <select id="resGuests" class="form-control">
+              <option value="1">1 Person</option>
+              <option value="2" selected>2 Guests</option>
+              <option value="4">4 Guests</option>
+              <option value="6">6 Guests</option>
+              <option value="8+">8+ Guests</option>
+            </select>
+          </div>
+        </div>
+        <div class="form-row">
+          <div class="form-group">
+            <label for="resDate">Preferred Date</label>
+            <input type="date" id="resDate" class="form-control" required />
+          </div>
+          <div class="form-group">
+            <label for="resTime">Preferred Time</label>
+            <input type="time" id="resTime" class="form-control" required />
+          </div>
+        </div>
+        <div class="form-group">
+          <label for="resSeating">Seating Preference</label>
+          <select id="resSeating" class="form-control">
+            <option value="Indoor Main Hall">Indoor Main Hall (Cozy & Warm)</option>
+            <option value="Covered Garden Patio">Covered Garden Patio</option>
+            <option value="Chef's Counter">Chef's Interactive Counter</option>
+          </select>
+        </div>
+        <button type="submit" class="btn-primary" style="width: 100%; justify-content: center; margin-top: 0.5rem;">
+          Confirm Reservation
+        </button>
+      </form>
+    </div>
+  </div>
+
+  <!-- Toast Notification Container -->
+  <div id="toastContainer" class="toast-container"></div>
+
+  <script src="js/main.js?v=2.5"></script>
+</body>
+</html>

@@ -1,0 +1,347 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Dineflow - Order Confirmation</title>
+  <link rel="stylesheet" href="css/style.css?v=2.6" />
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,500;0,600;0,700;1,400&family=Plus+Jakarta+Sans:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+
+  <style>
+    :root {
+      --bg-cream: #FAF7F2;
+      --bg-cream-light: #FFFDF9;
+      --bg-beige: #F2EBE1;
+      --bg-beige-deep: #E7DDCE;
+      --card-bg: #FFFFFF;
+      --card-border: #E8DFD3;
+      --accent-terracotta: #C86D3B;
+      --accent-terracotta-hover: #AF5B2D;
+      --accent-terracotta-soft: rgba(200, 109, 59, 0.12);
+      --accent-green: #3F704D;
+      --accent-green-soft: rgba(63, 112, 77, 0.12);
+      --text-primary: #2C231C;
+      --text-secondary: #6B5E53;
+      --text-muted: #9C8F84;
+      --radius-sm: 8px;
+      --radius-md: 14px;
+      --radius-lg: 20px;
+      --radius-pill: 999px;
+      --font-serif: 'Playfair Display', Georgia, serif;
+      --font-sans: 'Plus Jakarta Sans', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+    }
+
+    body {
+      background-color: var(--bg-cream);
+      color: var(--text-primary);
+      font-family: var(--font-sans);
+      margin: 0;
+      padding: 0;
+      overflow-x: hidden;
+      -webkit-font-smoothing: antialiased;
+    }
+
+    .confirmation-container {
+      max-width: 840px;
+      margin: 3rem auto 5rem;
+      padding: 0 1.5rem;
+    }
+
+    .confirmation-card {
+      background: #FFFFFF;
+      border: 1px solid var(--card-border);
+      border-radius: var(--radius-lg);
+      padding: 3rem 2.5rem;
+      box-shadow: 0 12px 36px rgba(44, 35, 28, 0.06);
+      text-align: center;
+    }
+
+    .confirmation-success-badge {
+      width: 76px;
+      height: 76px;
+      margin: 0 auto 1.25rem;
+      background: var(--accent-green-soft);
+      color: var(--accent-green);
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 2.6rem;
+      border: 2px solid rgba(63, 112, 77, 0.2);
+    }
+
+    .order-number-pill {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.75rem;
+      background: var(--bg-beige);
+      border: 1px solid var(--card-border);
+      padding: 0.55rem 1.4rem;
+      border-radius: var(--radius-pill);
+      font-family: monospace;
+      font-size: 1.15rem;
+      font-weight: 700;
+      color: var(--accent-terracotta);
+      margin: 1.2rem 0;
+    }
+
+    .order-number-pill .btn-copy {
+      background: #FFFFFF;
+      border: 1px solid var(--card-border);
+      border-radius: 6px;
+      padding: 0.25rem 0.65rem;
+      font-size: 0.8rem;
+      cursor: pointer;
+      color: var(--text-secondary);
+      font-family: var(--font-sans);
+      font-weight: 600;
+      transition: all 0.2s;
+    }
+
+    .order-number-pill .btn-copy:hover {
+      background: var(--bg-beige-deep);
+      color: var(--text-primary);
+    }
+
+    .confirmation-meta-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 1.5rem;
+      text-align: left;
+      background: var(--bg-cream-light);
+      border: 1px solid var(--card-border);
+      border-radius: var(--radius-md);
+      padding: 1.6rem;
+      margin: 2rem 0;
+    }
+
+    .confirmation-meta-block h4 {
+      font-size: 0.82rem;
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+      color: var(--text-muted);
+      margin: 0 0 0.4rem;
+    }
+
+    .confirmation-meta-block p {
+      font-size: 0.95rem;
+      color: var(--text-primary);
+      margin: 0;
+      line-height: 1.55;
+    }
+
+    .confirmation-actions {
+      display: flex;
+      justify-content: center;
+      gap: 1rem;
+      flex-wrap: wrap;
+      margin-top: 2rem;
+    }
+
+    .btn-primary {
+      background: var(--accent-terracotta);
+      color: #FFFFFF;
+      padding: 0.85rem 1.8rem;
+      border-radius: var(--radius-md);
+      font-weight: 700;
+      font-size: 0.98rem;
+      text-decoration: none;
+      display: inline-flex;
+      align-items: center;
+      gap: 0.5rem;
+      box-shadow: 0 4px 14px rgba(200, 109, 59, 0.28);
+      transition: all 0.2s;
+    }
+
+    .btn-primary:hover {
+      background: var(--accent-terracotta-hover);
+      transform: translateY(-2px);
+    }
+
+    .btn-secondary {
+      background: #FFFFFF;
+      color: var(--text-primary);
+      padding: 0.85rem 1.6rem;
+      border: 1.5px solid var(--card-border);
+      border-radius: var(--radius-md);
+      font-weight: 600;
+      font-size: 0.95rem;
+      text-decoration: none;
+      display: inline-flex;
+      align-items: center;
+      gap: 0.4rem;
+      transition: all 0.2s;
+    }
+
+    .btn-secondary:hover {
+      background: var(--bg-beige);
+      border-color: var(--text-muted);
+    }
+
+    @media (max-width: 640px) {
+      .confirmation-meta-grid {
+        grid-template-columns: 1fr;
+        gap: 1rem;
+      }
+      .confirmation-card {
+        padding: 2rem 1.25rem;
+      }
+    }
+  </style>
+</head>
+<body>
+
+  <!-- Top Announcement Bar -->
+  <aside class="top-bar" aria-label="Announcement">
+    <div class="top-bar-inner">
+      <span>✨ Dineflow Kitchen — Your order is being prepared with artisanal love</span>
+      <div id="backendStatusPill" class="server-badge">
+        <span class="server-dot"></span> Spring Boot Backend: Online
+      </div>
+    </div>
+  </aside>
+
+  <!-- Navigation Bar -->
+  <header>
+    <nav class="navbar" aria-label="Main Navigation">
+      <div class="nav-container">
+        <!-- Logo -->
+        <a href="/" class="brand-logo">
+          <div class="brand-logo-icon">🍽️</div>
+          <span class="brand-name">Dine<span>flow</span></span>
+        </a>
+
+        <!-- Desktop Navigation Links -->
+        <ul class="nav-links">
+          <li><a href="/">Home</a></li>
+          <li><a href="menu.html">Full Menu</a></li>
+          <li><a href="orders.html">My Orders</a></li>
+          <li><a href="track-order.html">Track Order</a></li>
+          <li><a href="/#about">Our Story</a></li>
+        </ul>
+
+        <!-- Action Buttons -->
+        <div class="nav-actions">
+          <button id="openCartBtn" class="cart-btn" title="View Order Tray" aria-label="View Order Tray">
+            🛒
+            <span id="cartBadge" class="cart-badge">0</span>
+          </button>
+          <a href="menu.html" class="btn-primary" style="padding: 0.68rem 1.35rem; font-size: 0.9rem; font-weight: 700; text-decoration: none;">
+            Order Food
+          </a>
+        </div>
+      </div>
+    </nav>
+  </header>
+
+  <!-- Main Confirmation Container -->
+  <main class="confirmation-container">
+    
+    <div class="confirmation-card">
+      
+      <!-- Success Icon -->
+      <div class="confirmation-success-badge">
+        ✓
+      </div>
+
+      <span class="section-subtitle" style="color: var(--accent-green); font-weight: 700; text-transform: uppercase; font-size: 0.85rem; letter-spacing: 0.1em;">Order Placed Successfully</span>
+      <h1 class="section-title" style="font-family: var(--font-serif); font-size: 2.25rem; margin: 0.4rem 0 0.6rem; color: var(--text-primary);">Thank You For Your Order!</h1>
+      <p class="section-desc" style="max-width: 580px; margin: 0 auto 1.5rem; color: var(--text-secondary); font-size: 1rem; line-height: 1.6;">
+        Your order has been recorded in our system and our master chefs are crafting your dishes with farm-fresh ingredients.
+      </p>
+
+      <!-- Unique Order Number Pill -->
+      <div>
+        <div class="order-number-pill">
+          <span>Order No:</span>
+          <span id="confOrderNumber">Loading...</span>
+          <button id="copyOrderNumberBtn" class="btn-copy" title="Copy Order Number">📋 Copy</button>
+        </div>
+      </div>
+
+      <div style="display: inline-block; background: var(--accent-green-soft); color: var(--accent-green); font-weight: 700; font-size: 0.85rem; padding: 0.4rem 1.1rem; border-radius: var(--radius-pill); margin-bottom: 1.5rem;">
+        Status: <span id="confStatus">PLACED</span> • Estimated Kitchen Time: 35-45 mins
+      </div>
+
+      <!-- Customer & Delivery Meta Grid -->
+      <div class="confirmation-meta-grid">
+        <div class="confirmation-meta-block">
+          <h4>Customer Details</h4>
+          <p>
+            <strong id="confCustomerName">—</strong><br />
+            📞 <span id="confCustomerPhone">—</span>
+          </p>
+        </div>
+
+        <div class="confirmation-meta-block">
+          <h4>Delivery Address</h4>
+          <p id="confDeliveryAddress">—</p>
+          <p id="confDeliveryInstructions" style="font-size: 0.82rem; color: var(--text-muted); margin-top: 0.3rem;"></p>
+        </div>
+
+        <div class="confirmation-meta-block">
+          <h4>Placed On</h4>
+          <p id="confPlacedAt">—</p>
+        </div>
+
+        <div class="confirmation-meta-block">
+          <h4>Payment Method</h4>
+          <p><strong>Pay on Delivery</strong> (Cash / UPI QR at doorstep)</p>
+          <p style="font-size: 0.8rem; color: var(--text-muted); margin-top: 0.2rem;">
+            No online payment was charged. You will pay when your order arrives.
+          </p>
+        </div>
+      </div>
+
+      <!-- Ordered Items Review -->
+      <div style="text-align: left; margin-top: 1.8rem;">
+        <h3 style="font-family: var(--font-serif); font-size: 1.3rem; margin-bottom: 0.9rem; color: var(--text-primary);">
+          Ordered Items
+        </h3>
+        
+        <div id="confItemsList" style="border: 1px solid var(--card-border); border-radius: var(--radius-md); padding: 1rem 1.25rem; background: #FFFFFF;">
+          <!-- Dynamically populated -->
+        </div>
+
+        <!-- Price Breakdown -->
+        <div class="price-breakdown" style="max-width: 380px; margin: 1.25rem 0 0 auto; border-top: 1px solid var(--card-border); padding-top: 1rem;">
+          <div class="price-row" style="display: flex; justify-content: space-between; font-size: 0.92rem; margin-bottom: 0.5rem; color: var(--text-secondary);">
+            <span>Items Subtotal</span>
+            <span id="confSubtotal" style="font-weight: 600; color: var(--text-primary);">&#8377;0.00</span>
+          </div>
+          <div class="price-row" style="display: flex; justify-content: space-between; font-size: 0.92rem; margin-bottom: 0.5rem; color: var(--text-secondary);">
+            <span>Delivery Fee</span>
+            <span id="confDeliveryFee" style="font-weight: 600; color: var(--text-primary);">&#8377;40.00</span>
+          </div>
+          <div class="price-row total-row" style="display: flex; justify-content: space-between; margin-top: 0.8rem; padding-top: 0.8rem; border-top: 2px solid var(--card-border); font-size: 1.25rem; font-weight: 800; color: var(--accent-terracotta);">
+            <span>Total Payable on Delivery</span>
+            <span id="confTotal">&#8377;0.00</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- Action Buttons -->
+      <div class="confirmation-actions">
+        <a id="confTrackOrderBtn" href="track-order.html" class="btn-primary">
+          🛵 Track Order Live →
+        </a>
+        <a href="orders.html" class="btn-secondary">
+          📋 My Orders
+        </a>
+        <a href="menu.html" class="btn-secondary">
+          🍽️ Order More Food
+        </a>
+      </div>
+
+    </div>
+  </main>
+
+  <!-- Toast Notification Container -->
+  <div id="toastContainer" class="toast-container"></div>
+
+  <!-- Scripts -->
+  <script src="js/main.js?v=2.6"></script>
+</body>
+</html>

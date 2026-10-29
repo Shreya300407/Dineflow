@@ -1,0 +1,323 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Dineflow - Artisanal Menu & Online Ordering</title>
+  <link rel="stylesheet" href="css/style.css?v=2.5" />
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+</head>
+<body>
+
+  <!-- Top Announcement Bar -->
+  <aside class="top-bar" aria-label="Announcement">
+    <div class="top-bar-inner">
+      <span>✨ Dineflow Artisanal Menu — Seasonal organic specials freshly prepared</span>
+      <div id="backendStatusPill" class="server-badge">
+        <span class="server-dot"></span> Spring Boot Backend: Online
+      </div>
+    </div>
+  </aside>
+
+  <!-- Navigation Bar -->
+  <header>
+    <nav class="navbar" aria-label="Main Navigation">
+      <div class="nav-container">
+        <!-- Logo -->
+        <a href="/" class="brand-logo">
+          <div class="brand-logo-icon">🍽️</div>
+          <span class="brand-name">Dine<span>flow</span></span>
+        </a>
+
+        <!-- Desktop Navigation Links -->
+        <ul class="nav-links">
+          <li><a href="/">Home</a></li>
+          <li><a href="menu.html" class="active">Full Menu</a></li>
+          <li><a href="orders.html">My Orders</a></li>
+          <li><a href="track-order.html">Track Order</a></li>
+          <li><a href="/#about">Our Story</a></li>
+        </ul>
+
+        <!-- Action Buttons -->
+        <div class="nav-actions">
+          <button id="openCartBtn" class="cart-btn" title="View Order Tray" aria-label="View Order Tray">
+            🛒
+            <span id="cartBadge" class="cart-badge">0</span>
+          </button>
+          <button class="btn-reserve btn-open-reserve">
+            <span>📅</span> Reserve Table
+          </button>
+        </div>
+      </div>
+    </nav>
+  </header>
+
+  <!-- Menu Page Header & Search Bar -->
+  <header class="menu-page-header">
+    <span class="section-subtitle">Farm-Fresh & Handcrafted</span>
+    <h1 class="section-title">Artisanal Food Menu</h1>
+    <p class="section-desc">
+      Explore our chef-curated selection spanning authentic starters, savory mains, stone-baked pizzas, gourmet burgers, decadent desserts, and botanical drinks.
+    </p>
+
+    <!-- Search Bar -->
+    <div class="search-box-wrapper">
+      <div class="search-input-group">
+        <span class="search-icon">🔍</span>
+        <input 
+          type="text" 
+          id="menuSearchInput" 
+          class="search-input" 
+          placeholder="Search by dish name, ingredient (e.g., Truffle, Paneer, Burger)..." 
+          aria-label="Search food menu"
+        />
+        <button id="clearSearchBtn" class="search-clear-btn" aria-label="Clear search">&times;</button>
+      </div>
+    </div>
+  </header>
+
+  <!-- Menu Content Section -->
+  <main class="menu-section" style="padding-top: 3rem;">
+    <!-- Category Filter Tabs -->
+    <nav class="filter-tabs" aria-label="Food Categories">
+      <button class="filter-btn active" data-filter="All">
+        All <span id="countAll" class="category-count-badge">0</span>
+      </button>
+      <button class="filter-btn" data-filter="Starters">
+        Starters <span id="countStarters" class="category-count-badge">0</span>
+      </button>
+      <button class="filter-btn" data-filter="Main Course">
+        Main Course <span id="countMain" class="category-count-badge">0</span>
+      </button>
+      <button class="filter-btn" data-filter="Pizza">
+        Pizza <span id="countPizza" class="category-count-badge">0</span>
+      </button>
+      <button class="filter-btn" data-filter="Burgers">
+        Burgers <span id="countBurgers" class="category-count-badge">0</span>
+      </button>
+      <button class="filter-btn" data-filter="Desserts">
+        Desserts <span id="countDesserts" class="category-count-badge">0</span>
+      </button>
+      <button class="filter-btn" data-filter="Drinks">
+        Drinks <span id="countDrinks" class="category-count-badge">0</span>
+      </button>
+    </nav>
+
+    <!-- Results Status Bar -->
+    <div style="max-width: 1240px; margin: 0 auto 2rem; display: flex; justify-content: space-between; align-items: center; color: var(--text-secondary); font-size: 0.95rem; padding: 0 0.5rem;">
+      <span id="resultsCount">Showing all dishes</span>
+      <span style="font-size: 0.85rem; color: var(--accent-terracotta); font-weight: 600;">All prices in ₹ (INR)</span>
+    </div>
+
+    <!-- Food Cards Grid -->
+    <section id="menuGrid" class="menu-grid" aria-label="Menu Items">
+      <!-- Dynamic Injection by menu.js / main.js -->
+    </section>
+  </main>
+
+  <!-- Slide-in Shopping Cart Drawer -->
+  <div id="cartDrawerOverlay" class="cart-drawer-overlay"></div>
+  <aside id="cartDrawer" class="cart-drawer" aria-label="Shopping Cart">
+    <div class="cart-header">
+      <h3>Your Order Tray</h3>
+      <button id="closeCartBtn" class="modal-close" aria-label="Close cart">&times;</button>
+    </div>
+    
+    <div id="cartItemsList" class="cart-body">
+      <!-- Populated by JS -->
+    </div>
+
+    <div class="cart-footer">
+      <div class="cart-price-breakdown">
+        <div class="cart-breakdown-row">
+          <span>Subtotal:</span>
+          <span id="cartSubtotal">₹0.00</span>
+        </div>
+        <div class="cart-breakdown-row">
+          <span>GST (5%):</span>
+          <span id="cartTax">₹0.00</span>
+        </div>
+      </div>
+      
+      <div class="cart-total-row">
+        <span>Grand Total:</span>
+        <span id="cartTotal">₹0.00</span>
+      </div>
+
+      <button id="checkoutBtn" class="btn-checkout">Proceed to Checkout</button>
+    </div>
+  </aside>
+
+  <!-- Checkout & Order Placement Modal -->
+  <div id="checkoutModal" class="modal-overlay" role="dialog" aria-modal="true">
+    <div class="modal-card">
+      <button id="closeCheckoutModal" class="modal-close" aria-label="Close modal">&times;</button>
+      <div class="modal-header">
+        <h3>Complete Your Order</h3>
+        <p>Confirm your details to send your order straight to the kitchen.</p>
+      </div>
+
+      <form id="checkoutForm">
+        <div class="form-group">
+          <label for="orderName">Customer Name</label>
+          <input type="text" id="orderName" class="form-control" placeholder="e.g. Priya Sharma" required />
+        </div>
+        <div class="form-row">
+          <div class="form-group">
+            <label for="orderPhone">Phone Number</label>
+            <input type="tel" id="orderPhone" class="form-control" placeholder="10-digit mobile number" required />
+          </div>
+          <div class="form-group">
+            <label for="orderDiningType">Dining Option</label>
+            <select id="orderDiningType" class="form-control">
+              <option value="Dine-in (Table 1)">Dine-in (Table 1)</option>
+              <option value="Dine-in (Table 2)">Dine-in (Table 2)</option>
+              <option value="Dine-in (Table 3)">Dine-in (Table 3)</option>
+              <option value="Takeaway Pickup">Takeaway Counter Pickup</option>
+              <option value="Home Delivery">Doorstep Delivery</option>
+            </select>
+          </div>
+        </div>
+
+        <div style="background: var(--bg-cream); padding: 1rem; border-radius: var(--radius-sm); border: 1px solid var(--card-border); margin-bottom: 1.2rem;">
+          <div style="display: flex; justify-content: space-between; font-weight: 700; color: var(--text-primary); font-size: 1.05rem;">
+            <span>Payable Amount:</span>
+            <span id="checkoutPayableAmount" style="color: var(--accent-terracotta);">₹0.00</span>
+          </div>
+        </div>
+
+        <button type="submit" class="btn-primary" style="width: 100%; justify-content: center;">
+          Place Order via Spring Boot Backend
+        </button>
+      </form>
+    </div>
+  </div>
+
+  <!-- Order Receipt Modal -->
+  <div id="receiptModal" class="modal-overlay" role="dialog" aria-modal="true">
+    <div class="modal-card" style="text-align: center;">
+      <button id="closeReceiptModal" class="modal-close" aria-label="Close receipt">&times;</button>
+      <div class="receipt-header">
+        <div class="receipt-icon">🎉</div>
+        <h3 style="font-family: var(--font-serif); font-size: 1.8rem; color: var(--text-primary);">Order Confirmed!</h3>
+        <p style="color: var(--text-secondary); margin-top: 0.3rem;">The Dineflow kitchen has received your order.</p>
+        <div id="receiptOrderId" class="order-id-badge">Order ID: DF-000000</div>
+      </div>
+      <div id="receiptSummary" style="text-align: left; background: var(--bg-cream); padding: 1.2rem; border-radius: var(--radius-sm); border: 1px solid var(--card-border); margin-bottom: 1.5rem; font-size: 0.92rem;">
+        <!-- Populated on order success -->
+      </div>
+      <button id="receiptDoneBtn" class="btn-primary" style="width: 100%; justify-content: center;">
+        Done & Continue Exploring
+      </button>
+    </div>
+  </div>
+
+  <!-- Reservation Modal (Consistent with Homepage) -->
+  <div id="reservationModal" class="modal-overlay" role="dialog" aria-modal="true">
+    <div class="modal-card">
+      <button id="closeReserveModal" class="modal-close" aria-label="Close modal">&times;</button>
+      <div class="modal-header">
+        <h3>Reserve a Table</h3>
+        <p>Join us for an unforgettable dining journey at Dineflow.</p>
+      </div>
+      <form id="reservationForm">
+        <div class="form-group">
+          <label for="resName">Full Name</label>
+          <input type="text" id="resName" class="form-control" placeholder="e.g. Alexander Vance" required />
+        </div>
+        <div class="form-row">
+          <div class="form-group">
+            <label for="resPhone">Phone Number</label>
+            <input type="tel" id="resPhone" class="form-control" placeholder="(555) 000-0000" required />
+          </div>
+          <div class="form-group">
+            <label for="resGuests">Number of Guests</label>
+            <select id="resGuests" class="form-control">
+              <option value="1">1 Person</option>
+              <option value="2" selected>2 Guests</option>
+              <option value="4">4 Guests</option>
+              <option value="6">6 Guests</option>
+              <option value="8+">8+ Guests</option>
+            </select>
+          </div>
+        </div>
+        <div class="form-row">
+          <div class="form-group">
+            <label for="resDate">Preferred Date</label>
+            <input type="date" id="resDate" class="form-control" required />
+          </div>
+          <div class="form-group">
+            <label for="resTime">Preferred Time</label>
+            <input type="time" id="resTime" class="form-control" required />
+          </div>
+        </div>
+        <div class="form-group">
+          <label for="resSeating">Seating Preference</label>
+          <select id="resSeating" class="form-control">
+            <option value="Indoor Main Hall">Indoor Main Hall (Cozy & Warm)</option>
+            <option value="Covered Garden Patio">Covered Garden Patio</option>
+            <option value="Chef's Counter">Chef's Interactive Counter</option>
+          </select>
+        </div>
+        <button type="submit" class="btn-primary" style="width: 100%; justify-content: center; margin-top: 0.5rem;">
+          Confirm Reservation
+        </button>
+      </form>
+    </div>
+  </div>
+
+  <!-- Toast Notification Container -->
+  <div id="toastContainer" class="toast-container"></div>
+
+  <!-- Footer -->
+  <footer id="contact" class="footer">
+    <div class="footer-container">
+      <div class="footer-brand">
+        <a href="/" class="brand-logo">
+          <div class="brand-logo-icon">🍽️</div>
+          <span class="brand-name">Dine<span>flow</span></span>
+        </a>
+        <p>
+          A sanctuary for fine gastronomy and shared memories. Warm vibes, honest ingredients, and extraordinary flavors.
+        </p>
+      </div>
+
+      <div class="footer-col">
+        <h4>Navigation</h4>
+        <ul>
+          <li><a href="/">Home</a></li>
+          <li><a href="menu.html">Full Menu</a></li>
+          <li><a href="/#features">Experience</a></li>
+          <li><a href="/#about">Our Story</a></li>
+        </ul>
+      </div>
+
+      <div class="footer-col">
+        <h4>Opening Hours</h4>
+        <ul class="hours-list">
+          <li><span>Mon – Thu:</span> <span>11:30 AM – 10:00 PM</span></li>
+          <li><span>Fri – Sat:</span> <span>11:00 AM – 11:30 PM</span></li>
+          <li><span>Sunday:</span> <span>10:30 AM – 9:30 PM</span></li>
+        </ul>
+      </div>
+
+      <div class="footer-col">
+        <h4>Find Us</h4>
+        <p style="color:#B5A89D; font-size:0.9rem; margin-bottom:0.7rem;">
+          📍 142 Gourmet Boulevard, Culinary District<br/>
+          📞 (555) 346-3356<br/>
+          ✉️ reservations@dineflow.com
+        </p>
+      </div>
+    </div>
+
+    <div class="footer-bottom">
+      <p>&copy; 2026 Dineflow Restaurant Group. All rights reserved.</p>
+      <p>Powered by Java Spring Boot</p>
+    </div>
+  </footer>
+
+  <script src="js/main.js?v=2.5"></script>
+</body>
+</html>

@@ -1,0 +1,11 @@
+target/
+.git/
+.mvn/
+application-local.properties
+**/application-local.properties
+.env
+*.env
+HELP.md
+*.iml
+.idea/
+.vscode/
